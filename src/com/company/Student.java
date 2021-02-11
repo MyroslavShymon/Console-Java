@@ -1,9 +1,17 @@
 package com.company;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
-public class Student {
+import static com.company.Main.print;
+
+public class Student implements Serializable {
     private String firstName;
     private String lastName;
     private String surname;
@@ -24,6 +32,34 @@ public class Student {
         );
         faculty = setFaculty;
         numberOfRoom = setNumberOfRoom;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setPIB(String PIB) {
+        this.PIB = PIB;
+    }
+
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
+    }
+
+    public void setNumberOfRoom(int numberOfRoom) {
+        this.numberOfRoom = numberOfRoom;
     }
 
     public String getFirstName() {
@@ -71,4 +107,32 @@ public class Student {
             String StudentCity2 = s2.getCity();
             return StudentCity1.compareTo(StudentCity2);
     }};
+
+    public static void searchInStudents(String str, ArrayList<Student> students){
+        var result = students.stream().filter(
+                person -> person.getFaculty().equals(str) == true)
+                .collect(Collectors.toList());
+
+        if(result.size() == 0)System.out.println("Not found");
+        else {
+            Collections.sort(result, Student.sortRoom);
+            Collections.sort(result, Student.sortCity);
+            print((ArrayList<Student>) result);
+        }
+    }
+
+    public static void writeFile(ArrayList<Student> studentArray){
+        try
+        {
+            FileOutputStream fos = new FileOutputStream("employeeData");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(studentArray);
+            oos.close();
+            fos.close();
+        }
+        catch (IOException ioe)
+        {
+            ioe.printStackTrace();
+        }
+    }
 }
